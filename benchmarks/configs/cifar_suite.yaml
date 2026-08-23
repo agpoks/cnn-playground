@@ -1,4 +1,4 @@
-# Eight architectures, all on the identical CIFAR-10 classification task,
+# Nine architectures, all on the identical CIFAR-10 classification task,
 # so accuracy/params/train-time are directly comparable.
 models:
   - alexnet
@@ -8,5 +8,6 @@ models:
   - densenet
   - mobilenet
   - senet
+  - odenet
   - vit
 epochs: 30

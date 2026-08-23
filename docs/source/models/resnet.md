@@ -59,7 +59,10 @@ else:
 downsampling only at each stage's first block. Compare this to
 {doc}`googlenet`'s parallel-branch idea -- ResNet goes deep by making each
 individual layer easier to optimize, not by widening what one layer
-computes.
+computes. {doc}`odenet` takes the residual idea one step further: a
+`BasicBlock`'s `y = x + F(x)` is one discrete Euler step of an ODE, and
+ODE-Net replaces the whole discrete stack with one function integrated
+continuously -- see {doc}`../model_comparison` for the direct comparison.
 
 ![ResNet architecture diagram](../_static/plots/resnet-1.png)
 

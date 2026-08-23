@@ -1,7 +1,7 @@
-# How the eleven models differ
+# How the twelve models differ
 
-Ten of these are genuine CNNs, each isolating one architectural idea; the
-eleventh (ViT) removes convolution entirely, as a deliberate contrast.
+Eleven of these are genuine CNNs, each isolating one architectural idea;
+the twelfth (ViT) removes convolution entirely, as a deliberate contrast.
 
 | Model | Core idea | What breaks if you remove it |
 |---|---|---|
@@ -13,9 +13,23 @@ eleventh (ViT) removes convolution entirely, as a deliberate contrast.
 | [DenseNet](models/densenet) | every layer's output feeds every later layer in its block | far more parameters needed to get the same feature reuse |
 | [MobileNet](models/mobilenet) | depthwise-separable convolution (spatial and channel mixing split apart) | back to full/dense convolutions -- far more FLOPs for the same receptive field |
 | [SE-Net](models/senet) | a learned per-channel reweighting ("squeeze-and-excite") block | every channel is treated as equally important, regardless of input |
+| [ODE-Net](models/odenet) | ResNet's residual step taken to its continuous limit -- depth as ODE integration, not a layer count | back to a fixed discrete number of residual steps (ResNet itself) |
 | [U-Net](models/unet) | encoder-decoder with skip connections, one label per *pixel* | without the decoder+skips, you're back to one label per *image* |
 | [YOLO-style detector](models/yolo) | predict several boxes + classes in one forward pass | back to a sliding-window/region-proposal pipeline, far slower |
 | [ViT](models/vit) | **no convolution at all** -- patches + positional embeddings + self-attention | this *is* the removal -- see below |
+
+## ResNet vs. ODE-Net: discrete vs. continuous depth
+
+Worth contrasting directly, since they share the exact same underlying
+idea: a ResNet {doc}`models/resnet` block computes `y = x + F(x)`, one
+discrete Euler step of a residual update, applied once per block. ODE-Net
+{doc}`models/odenet` observes that this *is* forward-Euler integration of
+`dh/dt = f(h(t), t)`, and replaces the entire stack of discrete blocks
+with one small conv net `f` integrated continuously from `t=0` to `t=1`
+(a hand-rolled fixed-step RK4 solver here, not the paper's adaptive-step
+solver + adjoint method -- see `models/odenet/model.py`). Same residual
+idea; ResNet takes fixed steps, ODE-Net makes the step size (and
+implicitly the "depth") a solver parameter instead.
 
 ## The one deliberate outlier: ViT
 
@@ -35,8 +49,8 @@ actually buy you" -- exactly the same framing
 ## The real datasets, and who uses them
 
 - **CIFAR-10**: AlexNet, VGG, GoogLeNet/Inception, ResNet, DenseNet,
-  MobileNet, SE-Net, and ViT all train on the identical classification
-  task -- eight models, directly comparable.
+  MobileNet, SE-Net, ODE-Net, and ViT all train on the identical
+  classification task -- nine models, directly comparable.
 - **MNIST**: LeNet-5, on the dataset it was originally designed for.
 - **Oxford-IIIT Pet** (segmentation masks): U-Net, the one model doing
   dense per-pixel prediction instead of one label per image.
