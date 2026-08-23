@@ -1,10 +1,10 @@
 # cnn-playground
 
 A playground for **CNN architectures** -- implement, run, and benchmark
-twelve convolutional architectures spanning the field's core ideas, plus
+thirteen convolutional architectures spanning the field's core ideas, plus
 one deliberate non-convolutional contrast baseline (Vision Transformer),
-all on real image datasets. Third companion project, after
-`liquid-nn-playground` and `sciml-playground`.
+all on real image datasets (bar one deliberate exception, NCA). Third
+companion project, after `liquid-nn-playground` and `sciml-playground`.
 
 Every model ships with a runnable Python example and a Jupyter notebook.
 
@@ -25,6 +25,7 @@ models/senet
 models/odenet
 models/liquidode
 models/unet
+models/nca
 models/yolo
 models/vit
 datasets

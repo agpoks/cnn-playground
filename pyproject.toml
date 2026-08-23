@@ -1,7 +1,7 @@
 [project]
 name = "cnn-playground"
 version = "0.1.0"
-description = "A playground for CNN architectures: LeNet, AlexNet, VGG, GoogLeNet/Inception, ResNet, DenseNet, MobileNet, Squeeze-and-Excitation, U-Net, a YOLO-style detector, and Vision Transformer (a non-convolutional contrast baseline), with runnable examples, benchmarks, and real datasets."
+description = "A playground for CNN architectures: LeNet, AlexNet, VGG, GoogLeNet/Inception, ResNet, DenseNet, MobileNet, Squeeze-and-Excitation, ODE-Net, Liquid-ODE, U-Net, Growing Neural Cellular Automata, a YOLO-style detector, and Vision Transformer (a non-convolutional contrast baseline), with runnable examples, benchmarks, and real datasets."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }

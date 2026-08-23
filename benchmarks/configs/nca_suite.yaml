@@ -1,0 +1,8 @@
+# Growing Neural Cellular Automata on a procedurally generated RGBA
+# target. Not a classification/segmentation/detection task like the other
+# clusters -- "epochs" here means training iterations of the grow-rule
+# (each iteration = one freshly-seeded, randomly-unrolled trajectory), and
+# the reported metric (final_mse) is lower-is-better rather than accuracy.
+models:
+  - nca
+epochs: 300

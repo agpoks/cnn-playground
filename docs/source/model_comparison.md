@@ -1,7 +1,7 @@
-# How the thirteen models differ
+# How the fourteen models differ
 
-Twelve of these are genuine CNNs, each isolating one architectural idea;
-the thirteenth (ViT) removes convolution entirely, as a deliberate contrast.
+Thirteen of these are genuine CNNs, each isolating one architectural idea;
+the fourteenth (ViT) removes convolution entirely, as a deliberate contrast.
 
 | Model | Core idea | What breaks if you remove it |
 |---|---|---|
@@ -16,6 +16,7 @@ the thirteenth (ViT) removes convolution entirely, as a deliberate contrast.
 | [ODE-Net](models/odenet) | ResNet's residual step taken to its continuous limit -- depth as ODE integration, not a layer count | back to a fixed discrete number of residual steps (ResNet itself) |
 | [Liquid-ODE](models/liquidode) | ODE-Net's dynamics, gated like a Liquid Time-Constant network -- learned, input-dependent relaxation rate | back to ODE-Net's plain (non-gated, fixed-rate) dynamics |
 | [U-Net](models/unet) | encoder-decoder with skip connections, one label per *pixel* | without the decoder+skips, you're back to one label per *image* |
+| [NCA](models/nca) | a local update rule, iterated for many stochastic steps, not a single forward pass | no growth at all -- the seed cell just sits there, one frame forever |
 | [YOLO-style detector](models/yolo) | predict several boxes + classes in one forward pass | back to a sliding-window/region-proposal pipeline, far slower |
 | [ViT](models/vit) | **no convolution at all** -- patches + positional embeddings + self-attention | this *is* the removal -- see below |
 
@@ -44,6 +45,26 @@ ResNet (fixed discrete steps) -> ODE-Net (continuous depth, fixed
 dynamics) -> Liquid-ODE (continuous depth, input-dependent/"liquid"
 dynamics).
 
+## NCA: not a forward pass at all, but a dynamical system
+
+Every model above -- feedforward CNN, ODE-Net's continuous integration,
+U-Net's encoder-decoder, even ViT's attention -- is still "run the model
+once (or integrate it once) on an input, get one prediction." {doc}`models/nca`
+breaks that pattern entirely: the trained object is a small local update
+rule (perceive via fixed Sobel/identity kernels, then a tiny learned conv
+net), applied identically and independently at every cell of a grid, for
+dozens of *stochastic asynchronous* steps -- a random subset of cells fire
+each step, and a living-cell mask keeps the undefined background at
+exactly zero. A single alive seed cell, iterated under this rule,
+self-organizes into a target pattern. Training means unrolling the rule
+through time and comparing the *final* state to a target, not comparing
+one prediction to one label -- closer in spirit to training a cellular
+automaton or a PDE time-stepper than to training a classifier. It trains
+against a procedurally generated RGBA target rather than the paper's
+emoji, and skips the paper's sample-pool trick that additionally teaches
+persistence/damage-regeneration -- see `models/nca/model.py` for the full
+honesty note.
+
 ## The one deliberate outlier: ViT
 
 Every other model in this repo is built from `nn.Conv2d`. ViT is built
@@ -69,5 +90,8 @@ actually buy you" -- exactly the same framing
   dense per-pixel prediction instead of one label per image.
 - **Penn-Fudan** (real pedestrian bounding boxes): the YOLO-style
   detector, the one model predicting multiple boxes per image.
+- **Procedurally generated RGBA target** (not a dataset): NCA, the one
+  model whose "training data" is a single synthetic target pattern grown
+  from a seed cell -- see `models/nca/model.py` for why.
 
 See {doc}`benchmarks` for how these clusters are grouped for comparison.

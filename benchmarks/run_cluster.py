@@ -4,6 +4,7 @@
     python benchmarks/run_cluster.py --cluster mnist --device auto
     python benchmarks/run_cluster.py --cluster segmentation --device auto
     python benchmarks/run_cluster.py --cluster detection --device auto
+    python benchmarks/run_cluster.py --cluster nca --device auto
 
 Each models/<name>/example.py must print one final line:
 
@@ -31,7 +32,7 @@ RESULT_RE = re.compile(
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--cluster", required=True, choices=["cifar", "mnist", "segmentation", "detection"])
+    parser.add_argument("--cluster", required=True, choices=["cifar", "mnist", "segmentation", "detection", "nca"])
     parser.add_argument("--device", default="auto")
     parser.add_argument("--epochs", type=int, default=None)
     args = parser.parse_args()
