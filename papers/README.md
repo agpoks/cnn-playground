@@ -2,7 +2,7 @@
 
 For each model in `models/`, the paper picked here is the one that
 introduces the architectural idea in its original form. BibTeX for all
-twelve is in [`references.bib`](references.bib).
+thirteen is in [`references.bib`](references.bib).
 
 | Model | Paper | Year | Link |
 |---|---|---|---|
@@ -15,13 +15,14 @@ twelve is in [`references.bib`](references.bib).
 | [MobileNet](../models/mobilenet) | MobileNets: Efficient CNNs for Mobile Vision Applications | 2017 | [arXiv:1704.04861](https://arxiv.org/abs/1704.04861) |
 | [SE-Net](../models/senet) | Squeeze-and-Excitation Networks | CVPR 2018 | [arXiv:1709.01507](https://arxiv.org/abs/1709.01507) |
 | [ODE-Net](../models/odenet) | Neural Ordinary Differential Equations | NeurIPS 2018 | [arXiv:1806.07366](https://arxiv.org/abs/1806.07366) |
+| [Liquid-ODE](../models/liquidode) | *(this repo's own combination, not one paper)* -- Neural ODEs + Liquid Time-constant Networks | 2018 / 2021 | [1806.07366](https://arxiv.org/abs/1806.07366), [2006.04439](https://arxiv.org/abs/2006.04439) |
 | [U-Net](../models/unet) | U-Net: Convolutional Networks for Biomedical Image Segmentation | MICCAI 2015 | [arXiv:1505.04597](https://arxiv.org/abs/1505.04597) |
 | [YOLO-style detector](../models/yolo) | You Only Look Once: Unified, Real-Time Object Detection | CVPR 2016 | [arXiv:1506.02640](https://arxiv.org/abs/1506.02640) |
 | [ViT](../models/vit) | An Image is Worth 16x16 Words (Vision Transformer) | ICLR 2021 | [arXiv:2010.11929](https://arxiv.org/abs/2010.11929) |
 
-## Why these twelve, and the ladder they form
+## Why these thirteen, and the ladder they form
 
-Eleven of these are genuine CNNs, each isolating one specific architectural
+Twelve of these are genuine CNNs, each isolating one specific architectural
 idea, roughly in the order the field introduced them:
 
 **LeNet** (the original, small CNN) -> **AlexNet** (much deeper + ReLU +
@@ -34,10 +35,13 @@ reuse) -> **MobileNet** (depthwise-separable convolutions, an efficiency
 axis orthogonal to depth) -> **SE-Net** (channel attention as a drop-in
 block, added on top of any of the above) -> **ODE-Net** (ResNet's residual
 block taken to its continuous limit: depth becomes an ODE integration
-variable instead of a discrete layer count, see below) -> **U-Net** (the
-same convolution/pooling vocabulary, repurposed as an encoder-decoder with
-skip connections for *dense* per-pixel prediction instead of one label per
-image).
+variable instead of a discrete layer count, see below) -> **Liquid-ODE**
+(ODE-Net's own dynamics made "liquid": the same continuous-depth
+integration, but `dh/dt` is now a Liquid-Time-Constant-gated equation with
+a learned, input-dependent time constant, instead of a plain conv net --
+see below) -> **U-Net** (the same convolution/pooling vocabulary,
+repurposed as an encoder-decoder with skip connections for *dense*
+per-pixel prediction instead of one label per image).
 
 ODE-Net is worth contrasting directly with ResNet: a ResNet block computes
 `y = x + F(x)`, one discrete Euler step of a residual update, repeated once
@@ -46,6 +50,17 @@ per block. ODE-Net's insight is that this *is* forward-Euler integration of
 conv net `f` is integrated continuously from `t=0` to `t=1` by an ODE
 solver (a hand-rolled fixed-step RK4 here, see `models/odenet/model.py`).
 Same residual idea, continuous instead of discrete depth.
+
+Liquid-ODE takes that one step further, and is **not itself a published
+paper** -- it's this repo's own assembly of two real ideas (ODE-Net's
+continuous depth + Liquid Time-constant Networks' governing equation,
+Hasani et al. 2021), stated explicitly as such in `model.py`. Where
+ODE-Net's `f(h,t)` is a plain conv net, Liquid-ODE's dynamics are
+`dh/dt = -h/tau(h,x) + S(h,x)*(A-h)`: `tau` (how fast the state relaxes)
+and `S` (a gate toward a learned rest state `A`) are themselves small conv
+nets of the current state and input, so the relaxation rate itself is
+input-dependent -- see `models/liquidode/model.py` for the full honesty
+note on what is and isn't reproduced from either source paper.
 
 The last two are deliberate departures from that ladder, added because the
 user asked for "CNN or related to CNN":

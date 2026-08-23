@@ -62,7 +62,9 @@ individual layer easier to optimize, not by widening what one layer
 computes. {doc}`odenet` takes the residual idea one step further: a
 `BasicBlock`'s `y = x + F(x)` is one discrete Euler step of an ODE, and
 ODE-Net replaces the whole discrete stack with one function integrated
-continuously -- see {doc}`../model_comparison` for the direct comparison.
+continuously; {doc}`liquidode` goes one step further still, gating that
+same continuous dynamics like a Liquid Time-Constant network -- see
+{doc}`../model_comparison` for the direct three-way comparison.
 
 ![ResNet architecture diagram](../_static/plots/resnet-1.png)
 

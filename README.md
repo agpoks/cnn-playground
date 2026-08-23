@@ -5,7 +5,7 @@
 # cnn-playground
 
 A playground for **CNN architectures**: implement, run, and benchmark
-eleven convolutional architectures spanning the field's core ideas -- plus
+twelve convolutional architectures spanning the field's core ideas -- plus
 one deliberate non-convolutional contrast baseline -- side by side on real
 image datasets. Third companion project, after
 [`liquid-nn-playground`](https://github.com/agpoks/liquid-nn-playground)
@@ -23,6 +23,7 @@ layout and philosophy.
 | Depthwise-separable convolutions | **MobileNet** | [`models/mobilenet`](models/mobilenet) |
 | Channel attention | **SE-Net** | [`models/senet`](models/senet) |
 | Continuous (ODE-integrated) depth | **ODE-Net** | [`models/odenet`](models/odenet) |
+| ODE-Net's dynamics, made "liquid" (learned time-constants) | **Liquid-ODE** | [`models/liquidode`](models/liquidode) |
 | Encoder-decoder, per-pixel prediction | **U-Net** | [`models/unet`](models/unet) |
 | Classification -> detection | **YOLO-style detector** | [`models/yolo`](models/yolo) |
 | **No convolution at all** (contrast baseline) | **Vision Transformer (ViT)** | [`models/vit`](models/vit) |
@@ -64,8 +65,9 @@ has a matching `example.ipynb`.
 Four real, standard vision datasets -- see [`datasets/README.md`](datasets/README.md):
 
 - **MNIST** (LeCun et al.) -- LeNet's original task.
-- **CIFAR-10** (Krizhevsky) -- AlexNet through ViT (including ODE-Net), so
-  they're directly comparable on the same classification task.
+- **CIFAR-10** (Krizhevsky) -- AlexNet through ViT (including ODE-Net and
+  Liquid-ODE), so they're directly comparable on the same classification
+  task.
 - **Oxford-IIIT Pet** (pixel-level segmentation masks) -- U-Net.
 - **Penn-Fudan pedestrians** (real bounding boxes derived from real
   per-instance masks) -- the YOLO-style detector.
@@ -75,7 +77,7 @@ stable URL -- no accounts, no manual steps.
 
 ## Scope note
 
-Like `sciml-playground`, these twelve models are heterogeneous enough
+Like `sciml-playground`, these thirteen models are heterogeneous enough
 (classification vs. dense per-pixel segmentation vs. multi-box detection)
 that benchmarking only makes sense within a dataset cluster -- see
 `benchmarks/README.md`.

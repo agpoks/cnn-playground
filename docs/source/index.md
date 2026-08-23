@@ -1,7 +1,7 @@
 # cnn-playground
 
 A playground for **CNN architectures** -- implement, run, and benchmark
-eleven convolutional architectures spanning the field's core ideas, plus
+twelve convolutional architectures spanning the field's core ideas, plus
 one deliberate non-convolutional contrast baseline (Vision Transformer),
 all on real image datasets. Third companion project, after
 `liquid-nn-playground` and `sciml-playground`.
@@ -23,6 +23,7 @@ models/densenet
 models/mobilenet
 models/senet
 models/odenet
+models/liquidode
 models/unet
 models/yolo
 models/vit

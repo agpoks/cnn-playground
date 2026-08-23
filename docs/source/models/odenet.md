@@ -113,7 +113,11 @@ memory argument targets).
 
 See {doc}`../model_comparison` for a direct discrete-vs-continuous
 contrast against {doc}`resnet`, which shares the exact same underlying
-residual idea.
+residual idea. {doc}`liquidode` takes this one step further: same
+continuous-depth integration, but `dh/dt` is a Liquid-Time-Constant-gated
+equation instead of a plain conv net -- see that page and
+`models/liquidode/model.py` for the honesty note on why that's this
+repo's own combination, not a reproduction of a single paper.
 
 ## Try it
 
