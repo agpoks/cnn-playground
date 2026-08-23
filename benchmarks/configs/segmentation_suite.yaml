@@ -1,0 +1,4 @@
+# U-Net on real Oxford-IIIT Pet segmentation masks.
+models:
+  - unet
+epochs: 20

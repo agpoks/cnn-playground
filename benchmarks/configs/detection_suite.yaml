@@ -1,0 +1,4 @@
+# The YOLO-style detector on real Penn-Fudan pedestrian bounding boxes.
+models:
+  - yolo
+epochs: 30

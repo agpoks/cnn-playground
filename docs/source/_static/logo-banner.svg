@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 140" width="640" height="140" role="img" aria-label="cnn-playground">
+  <defs>
+    <linearGradient id="bgb" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0891b2"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+    <radialGradient id="sheenb" cx="35%" cy="25%" r="65%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="text" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0891b2"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(6,6) scale(0.64)">
+    <rect x="18" y="18" width="164" height="164" rx="28" fill="url(#bgb)"/>
+    <rect x="18" y="18" width="164" height="164" rx="28" fill="url(#sheenb)"/>
+    <g stroke="#ffffff" stroke-opacity="0.35" stroke-width="2">
+      <line x1="18" y1="72" x2="182" y2="72"/>
+      <line x1="18" y1="126" x2="182" y2="126"/>
+      <line x1="72" y1="18" x2="72" y2="182"/>
+      <line x1="126" y1="18" x2="126" y2="182"/>
+    </g>
+    <rect x="72" y="72" width="54" height="54" rx="8" fill="none" stroke="#ffffff" stroke-width="5"/>
+    <g fill="#ffffff">
+      <circle cx="99" cy="99" r="9"/>
+      <circle cx="45" cy="45" r="6" opacity="0.6"/>
+      <circle cx="155" cy="45" r="6" opacity="0.6"/>
+      <circle cx="45" cy="155" r="6" opacity="0.6"/>
+      <circle cx="155" cy="155" r="6" opacity="0.6"/>
+    </g>
+  </g>
+
+  <text x="150" y="66" font-family="Helvetica, Arial, sans-serif" font-size="34" font-weight="700" fill="url(#text)">cnn-playground</text>
+  <text x="150" y="92" font-family="Helvetica, Arial, sans-serif" font-size="14.5" fill="#64748b">LeNet &#183; AlexNet &#183; VGG &#183; GoogLeNet &#183; ResNet &#183; DenseNet &#183; MobileNet &#183; SE-Net &#183; U-Net &#183; YOLO &#183; ViT</text>
+</svg>

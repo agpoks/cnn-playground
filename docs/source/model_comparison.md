@@ -1,0 +1,46 @@
+# How the eleven models differ
+
+Ten of these are genuine CNNs, each isolating one architectural idea; the
+eleventh (ViT) removes convolution entirely, as a deliberate contrast.
+
+| Model | Core idea | What breaks if you remove it |
+|---|---|---|
+| [LeNet-5](models/lenet) | conv + pool, stacked a few times | the original recipe -- nothing to remove, it's the baseline |
+| [AlexNet](models/alexnet) | much deeper, ReLU instead of tanh/sigmoid, dropout | reverts to LeNet-era depth and vanishing-gradient-prone activations |
+| [VGG](models/vgg) | uniform stacks of 3x3 convs, depth as the only knob | loses the "small kernels, more layers" insight -- back to ad hoc kernel sizes |
+| [GoogLeNet/Inception](models/googlenet) | multiple kernel sizes in parallel per layer (a "module") | the network must commit to one receptive field per layer instead of blending several |
+| [ResNet](models/resnet) | identity skip connections around each block | very deep networks stop training well -- this is *why* ResNet exists |
+| [DenseNet](models/densenet) | every layer's output feeds every later layer in its block | far more parameters needed to get the same feature reuse |
+| [MobileNet](models/mobilenet) | depthwise-separable convolution (spatial and channel mixing split apart) | back to full/dense convolutions -- far more FLOPs for the same receptive field |
+| [SE-Net](models/senet) | a learned per-channel reweighting ("squeeze-and-excite") block | every channel is treated as equally important, regardless of input |
+| [U-Net](models/unet) | encoder-decoder with skip connections, one label per *pixel* | without the decoder+skips, you're back to one label per *image* |
+| [YOLO-style detector](models/yolo) | predict several boxes + classes in one forward pass | back to a sliding-window/region-proposal pipeline, far slower |
+| [ViT](models/vit) | **no convolution at all** -- patches + positional embeddings + self-attention | this *is* the removal -- see below |
+
+## The one deliberate outlier: ViT
+
+Every other model in this repo is built from `nn.Conv2d`. ViT is built
+entirely from `nn.Linear` and attention -- an image is cut into fixed-size
+patches, each patch is linearly embedded, a learned position embedding is
+added, and the whole sequence goes through a plain Transformer encoder
+(the same block used for text). There is no spatial inductive bias
+anywhere: the model has to *learn* that nearby pixels are related, instead
+of that being baked into a convolution's receptive field the way every
+other model here gets for free. Comparing ViT's data efficiency against
+any of the CNNs above on the same CIFAR-10 task (see {doc}`benchmarks`) is
+a direct, empirical answer to "what does convolution's inductive bias
+actually buy you" -- exactly the same framing
+`liquid-nn-playground` uses for its RNN/CT-RNN baselines against LTC.
+
+## The real datasets, and who uses them
+
+- **CIFAR-10**: AlexNet, VGG, GoogLeNet/Inception, ResNet, DenseNet,
+  MobileNet, SE-Net, and ViT all train on the identical classification
+  task -- eight models, directly comparable.
+- **MNIST**: LeNet-5, on the dataset it was originally designed for.
+- **Oxford-IIIT Pet** (segmentation masks): U-Net, the one model doing
+  dense per-pixel prediction instead of one label per image.
+- **Penn-Fudan** (real pedestrian bounding boxes): the YOLO-style
+  detector, the one model predicting multiple boxes per image.
+
+See {doc}`benchmarks` for how these clusters are grouped for comparison.

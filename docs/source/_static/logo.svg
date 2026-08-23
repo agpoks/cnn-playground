@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="cnn-playground logo">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0891b2"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+    <radialGradient id="sheen" cx="35%" cy="25%" r="65%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect x="18" y="18" width="164" height="164" rx="28" fill="url(#bg)"/>
+  <rect x="18" y="18" width="164" height="164" rx="28" fill="url(#sheen)"/>
+
+  <!-- 3x3 conv kernel sliding over a grid (CNN motif) -->
+  <g stroke="#ffffff" stroke-opacity="0.35" stroke-width="1.6">
+    <line x1="18" y1="72" x2="182" y2="72"/>
+    <line x1="18" y1="126" x2="182" y2="126"/>
+    <line x1="72" y1="18" x2="72" y2="182"/>
+    <line x1="126" y1="18" x2="126" y2="182"/>
+  </g>
+  <rect x="72" y="72" width="54" height="54" rx="8" fill="none" stroke="#ffffff" stroke-width="4"/>
+
+  <!-- output feature map corner indicator -->
+  <g fill="#ffffff">
+    <circle cx="99" cy="99" r="8"/>
+    <circle cx="45" cy="45" r="5" opacity="0.6"/>
+    <circle cx="155" cy="45" r="5" opacity="0.6"/>
+    <circle cx="45" cy="155" r="5" opacity="0.6"/>
+    <circle cx="155" cy="155" r="5" opacity="0.6"/>
+  </g>
+</svg>

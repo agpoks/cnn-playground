@@ -1,0 +1,4 @@
+# LeNet-5 on the dataset it was originally designed for.
+models:
+  - lenet
+epochs: 10
