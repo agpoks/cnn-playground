@@ -1,7 +1,7 @@
-# How the fifteen models differ
+# How the sixteen models differ
 
-Fourteen of these are genuine CNNs, each isolating one architectural idea;
-the fifteenth (ViT) removes convolution entirely, as a deliberate contrast.
+Fifteen of these are genuine CNNs, each isolating one architectural idea;
+the sixteenth (ViT) removes convolution entirely, as a deliberate contrast.
 
 | Model | Core idea | What breaks if you remove it |
 |---|---|---|
@@ -16,6 +16,7 @@ the fifteenth (ViT) removes convolution entirely, as a deliberate contrast.
 | [ODE-Net](models/odenet) | ResNet's residual step taken to its continuous limit -- depth as ODE integration, not a layer count | back to a fixed discrete number of residual steps (ResNet itself) |
 | [Liquid-ODE](models/liquidode) | ODE-Net's dynamics, gated like a Liquid Time-Constant network -- learned, input-dependent relaxation rate | back to ODE-Net's plain (non-gated, fixed-rate) dynamics |
 | [Legendre-KAN-Conv](models/legendrekan) | each kernel tap's contribution is a learned Legendre-polynomial function of the input, not a single scalar weight | back to an ordinary conv -- one learned scalar weight per tap, no per-tap function |
+| [OBF-Conv](models/obfconv) | the kernel's spatial *shape* is constrained to the span of a few fixed Kautz/Laguerre basis filters (from system ID), only the combination coefficients are learned | back to an ordinary conv -- kernel shape is fully free, no basis constraint |
 | [U-Net](models/unet) | encoder-decoder with skip connections, one label per *pixel* | without the decoder+skips, you're back to one label per *image* |
 | [NCA](models/nca) | a local update rule, iterated for many stochastic steps, not a single forward pass | no growth at all -- the seed cell just sits there, one frame forever |
 | [YOLO-style detector](models/yolo) | predict several boxes + classes in one forward pass | back to a sliding-window/region-proposal pipeline, far slower |
@@ -65,6 +66,28 @@ ConvKAN idea is implemented, and even that follows a community
 implementation pattern rather than one single dedicated paper (see
 `models/legendrekan/model.py` for the full honesty note).
 
+## OBF-Conv: a structured kernel basis, from a completely different field
+
+{doc}`models/obfconv` also replaces the free kernel weight with a
+structured basis, but constrains a *different* dimension of the
+convolution than Legendre-KAN-Conv, and draws on a completely different
+source discipline: linear system identification, not KAN/spline theory.
+Kautz and Laguerre orthonormal basis functions (Wahlberg 1991; Oliveira
+et al. 2011) classically represent an LTI system's impulse response
+compactly as a short combination of fixed basis sequences, given a decay
+(Laguerre, one real pole) or resonance (Kautz, a complex-conjugate pole
+pair) prior -- instead of many free FIR taps. OBF-Conv transplants that
+onto a conv kernel's *spatial shape*: the kernel is constrained to the
+span of `n_basis**2` fixed, orthonormal Kautz- or Laguerre-generated 2D
+filters, and only the combination coefficients are learned. The contrast
+with Legendre-KAN-Conv is precise: that model's basis lives over the
+*pixel value* at a tap (a KAN-style nonlinear edge function); OBF-Conv's
+basis lives over the *tap/spatial index* itself (the kernel's shape). As
+far as could be found by searching the literature while building this
+repo, no CNN-kernel paper does this -- see `models/obfconv/model.py` for
+the full honesty note and the real DSP recursions used to generate the
+basis.
+
 ## NCA: not a forward pass at all, but a dynamical system
 
 Every model above -- feedforward CNN, ODE-Net's continuous integration,
@@ -103,9 +126,9 @@ actually buy you" -- exactly the same framing
 ## The real datasets, and who uses them
 
 - **CIFAR-10**: AlexNet, VGG, GoogLeNet/Inception, ResNet, DenseNet,
-  MobileNet, SE-Net, ODE-Net, Liquid-ODE, Legendre-KAN-Conv, and ViT all
-  train on the identical classification task -- eleven models, directly
-  comparable.
+  MobileNet, SE-Net, ODE-Net, Liquid-ODE, Legendre-KAN-Conv, OBF-Conv, and
+  ViT all train on the identical classification task -- twelve models,
+  directly comparable.
 - **MNIST**: LeNet-5, on the dataset it was originally designed for.
 - **Oxford-IIIT Pet** (segmentation masks): U-Net, the one model doing
   dense per-pixel prediction instead of one label per image.

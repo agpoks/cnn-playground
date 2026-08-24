@@ -5,7 +5,7 @@
 # cnn-playground
 
 A playground for **CNN architectures**: implement, run, and benchmark
-fourteen convolutional architectures spanning the field's core ideas --
+fifteen convolutional architectures spanning the field's core ideas --
 plus one deliberate non-convolutional contrast baseline -- side by side on
 real image datasets. Third companion project, after
 [`liquid-nn-playground`](https://github.com/agpoks/liquid-nn-playground)
@@ -25,6 +25,7 @@ layout and philosophy.
 | Continuous (ODE-integrated) depth | **ODE-Net** | [`models/odenet`](models/odenet) |
 | ODE-Net's dynamics, made "liquid" (learned time-constants) | **Liquid-ODE** | [`models/liquidode`](models/liquidode) |
 | Structured kernel: Legendre-polynomial edge functions (KAN) | **Legendre-KAN-Conv** | [`models/legendrekan`](models/legendrekan) |
+| Structured kernel: Kautz/Laguerre basis (from system ID, not one paper) | **OBF-Conv** | [`models/obfconv`](models/obfconv) |
 | Encoder-decoder, per-pixel prediction | **U-Net** | [`models/unet`](models/unet) |
 | Local update rule, iterated -- not a classifier at all | **NCA** (Growing Neural Cellular Automata) | [`models/nca`](models/nca) |
 | Classification -> detection | **YOLO-style detector** | [`models/yolo`](models/yolo) |
@@ -70,9 +71,9 @@ from a single seed cell rather than training on a dataset -- see
 [`models/nca`](models/nca) for why.)
 
 - **MNIST** (LeCun et al.) -- LeNet's original task.
-- **CIFAR-10** (Krizhevsky) -- AlexNet through ViT (including ODE-Net and
-  Liquid-ODE), so they're directly comparable on the same classification
-  task.
+- **CIFAR-10** (Krizhevsky) -- AlexNet through ViT (including ODE-Net,
+  Liquid-ODE, Legendre-KAN-Conv, and OBF-Conv), so they're directly
+  comparable on the same classification task.
 - **Oxford-IIIT Pet** (pixel-level segmentation masks) -- U-Net.
 - **Penn-Fudan pedestrians** (real bounding boxes derived from real
   per-instance masks) -- the YOLO-style detector.
@@ -82,7 +83,7 @@ stable URL -- no accounts, no manual steps.
 
 ## Scope note
 
-Like `sciml-playground`, these fourteen models are heterogeneous enough
+Like `sciml-playground`, these fifteen models are heterogeneous enough
 (classification vs. dense per-pixel segmentation vs. multi-box detection
 vs. NCA's iterated growth rule) that benchmarking only makes sense within
 a dataset cluster -- see `benchmarks/README.md`.

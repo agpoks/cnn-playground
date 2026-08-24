@@ -1,4 +1,4 @@
-# Eleven architectures, all on the identical CIFAR-10 classification task,
+# Twelve architectures, all on the identical CIFAR-10 classification task,
 # so accuracy/params/train-time are directly comparable.
 models:
   - alexnet
@@ -11,5 +11,6 @@ models:
   - odenet
   - liquidode
   - legendrekan
+  - obfconv
   - vit
 epochs: 30

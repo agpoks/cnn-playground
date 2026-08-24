@@ -2,8 +2,8 @@
 
 For each model in `models/`, the paper picked here is the one that
 introduces the architectural idea in its original form. BibTeX for all
-sixteen references (covering fifteen models -- Liquid-ODE and
-Legendre-KAN-Conv each cite two papers) is in
+eighteen references (covering sixteen models -- Liquid-ODE,
+Legendre-KAN-Conv, and OBF-Conv each cite two papers) is in
 [`references.bib`](references.bib).
 
 | Model | Paper | Year | Link |
@@ -19,14 +19,15 @@ Legendre-KAN-Conv each cite two papers) is in
 | [ODE-Net](../models/odenet) | Neural Ordinary Differential Equations | NeurIPS 2018 | [arXiv:1806.07366](https://arxiv.org/abs/1806.07366) |
 | [Liquid-ODE](../models/liquidode) | *(this repo's own combination, not one paper)* -- Neural ODEs + Liquid Time-constant Networks | 2018 / 2021 | [1806.07366](https://arxiv.org/abs/1806.07366), [2006.04439](https://arxiv.org/abs/2006.04439) |
 | [Legendre-KAN-Conv](../models/legendrekan) | *(follows a community pattern, not one paper)* -- KAN + Convolutional KANs | 2024 | [2404.19756](https://arxiv.org/abs/2404.19756), [2406.13155](https://arxiv.org/abs/2406.13155) |
+| [OBF-Conv](../models/obfconv) | *(this repo's own combination, not one paper)* -- Kautz/Laguerre orthonormal basis functions from system identification | 1991 / 2011 | classic reference, no arXiv preprint; IJMIC 2011 |
 | [NCA](../models/nca) | Growing Neural Cellular Automata: Differentiable Model of Morphogenesis | Distill 2020 | [distill.pub/2020/growing-ca](https://distill.pub/2020/growing-ca/) |
 | [U-Net](../models/unet) | U-Net: Convolutional Networks for Biomedical Image Segmentation | MICCAI 2015 | [arXiv:1505.04597](https://arxiv.org/abs/1505.04597) |
 | [YOLO-style detector](../models/yolo) | You Only Look Once: Unified, Real-Time Object Detection | CVPR 2016 | [arXiv:1506.02640](https://arxiv.org/abs/1506.02640) |
 | [ViT](../models/vit) | An Image is Worth 16x16 Words (Vision Transformer) | ICLR 2021 | [arXiv:2010.11929](https://arxiv.org/abs/2010.11929) |
 
-## Why these fifteen, and the ladder they form
+## Why these sixteen, and the ladder they form
 
-Fourteen of these are genuine CNNs (in the sense of being built from
+Fifteen of these are genuine CNNs (in the sense of being built from
 `nn.Conv2d`), each isolating one specific architectural idea, roughly in
 the order the field introduced them:
 
@@ -48,7 +49,11 @@ see below) -> **Legendre-KAN-Conv** (a different axis entirely: instead of
 one learned scalar weight per kernel tap, each tap's contribution is a
 learned Legendre-polynomial function of the input value there -- a
 structured/basis-function kernel parameterization instead of a free
-weight, see below) -> **U-Net** (the same convolution/pooling vocabulary,
+weight, see below) -> **OBF-Conv** (a different structured-kernel-basis
+choice again: the kernel's *spatial shape* -- not the function applied to
+the input value, as in Legendre-KAN-Conv -- is constrained to the span of
+a few fixed Kautz/Laguerre basis filters borrowed from system
+identification, see below) -> **U-Net** (the same convolution/pooling vocabulary,
 repurposed as an encoder-decoder with skip connections for *dense*
 per-pixel prediction instead of one label per image) -> **NCA** (the same
 convolution primitive, repurposed again: not one forward pass at all, but
@@ -88,6 +93,23 @@ the wider literature, though none of those are reproduced here -- see
 `models/legendrekan/model.py` for the full honesty note, including that
 the specific Legendre-basis-ConvKAN combination follows a community
 implementation pattern rather than one dedicated paper.
+
+OBF-Conv is **also not a single published paper**, and constrains a
+*different* dimension of the convolution than Legendre-KAN-Conv does.
+Kautz and Laguerre orthonormal basis functions (Wahlberg 1991; Oliveira
+et al. 2011) are real, established tools -- but exclusively in linear
+system identification, for representing an impulse response compactly as
+a short combination of fixed basis sequences given a decay (Laguerre) or
+resonance (Kautz) prior. This repo transplants that onto a conv kernel's
+*spatial shape*: the kernel is constrained to the span of a small number
+of fixed, orthonormal Kautz- or Laguerre-generated 2D filters, and only
+the combination coefficients are learned. Where Legendre-KAN-Conv bases
+its expansion on the *pixel value* at a tap, OBF-Conv bases it on the
+*tap/spatial-index* itself -- the kernel's shape, not the function applied
+under it. As far as could be found by searching the literature while
+building this repo, no CNN-kernel paper does this -- see
+`models/obfconv/model.py` for the full honesty note and the real DSP
+recursions used to generate the basis.
 
 NCA is worth contrasting against everything above it: every other model in
 this repo is a single forward pass (or, for ODE-Net/Liquid-ODE, a single
