@@ -2,7 +2,9 @@
 
 For each model in `models/`, the paper picked here is the one that
 introduces the architectural idea in its original form. BibTeX for all
-fourteen is in [`references.bib`](references.bib).
+sixteen references (covering fifteen models -- Liquid-ODE and
+Legendre-KAN-Conv each cite two papers) is in
+[`references.bib`](references.bib).
 
 | Model | Paper | Year | Link |
 |---|---|---|---|
@@ -16,14 +18,15 @@ fourteen is in [`references.bib`](references.bib).
 | [SE-Net](../models/senet) | Squeeze-and-Excitation Networks | CVPR 2018 | [arXiv:1709.01507](https://arxiv.org/abs/1709.01507) |
 | [ODE-Net](../models/odenet) | Neural Ordinary Differential Equations | NeurIPS 2018 | [arXiv:1806.07366](https://arxiv.org/abs/1806.07366) |
 | [Liquid-ODE](../models/liquidode) | *(this repo's own combination, not one paper)* -- Neural ODEs + Liquid Time-constant Networks | 2018 / 2021 | [1806.07366](https://arxiv.org/abs/1806.07366), [2006.04439](https://arxiv.org/abs/2006.04439) |
+| [Legendre-KAN-Conv](../models/legendrekan) | *(follows a community pattern, not one paper)* -- KAN + Convolutional KANs | 2024 | [2404.19756](https://arxiv.org/abs/2404.19756), [2406.13155](https://arxiv.org/abs/2406.13155) |
 | [NCA](../models/nca) | Growing Neural Cellular Automata: Differentiable Model of Morphogenesis | Distill 2020 | [distill.pub/2020/growing-ca](https://distill.pub/2020/growing-ca/) |
 | [U-Net](../models/unet) | U-Net: Convolutional Networks for Biomedical Image Segmentation | MICCAI 2015 | [arXiv:1505.04597](https://arxiv.org/abs/1505.04597) |
 | [YOLO-style detector](../models/yolo) | You Only Look Once: Unified, Real-Time Object Detection | CVPR 2016 | [arXiv:1506.02640](https://arxiv.org/abs/1506.02640) |
 | [ViT](../models/vit) | An Image is Worth 16x16 Words (Vision Transformer) | ICLR 2021 | [arXiv:2010.11929](https://arxiv.org/abs/2010.11929) |
 
-## Why these fourteen, and the ladder they form
+## Why these fifteen, and the ladder they form
 
-Thirteen of these are genuine CNNs (in the sense of being built from
+Fourteen of these are genuine CNNs (in the sense of being built from
 `nn.Conv2d`), each isolating one specific architectural idea, roughly in
 the order the field introduced them:
 
@@ -41,7 +44,11 @@ variable instead of a discrete layer count, see below) -> **Liquid-ODE**
 (ODE-Net's own dynamics made "liquid": the same continuous-depth
 integration, but `dh/dt` is now a Liquid-Time-Constant-gated equation with
 a learned, input-dependent time constant, instead of a plain conv net --
-see below) -> **U-Net** (the same convolution/pooling vocabulary,
+see below) -> **Legendre-KAN-Conv** (a different axis entirely: instead of
+one learned scalar weight per kernel tap, each tap's contribution is a
+learned Legendre-polynomial function of the input value there -- a
+structured/basis-function kernel parameterization instead of a free
+weight, see below) -> **U-Net** (the same convolution/pooling vocabulary,
 repurposed as an encoder-decoder with skip connections for *dense*
 per-pixel prediction instead of one label per image) -> **NCA** (the same
 convolution primitive, repurposed again: not one forward pass at all, but
@@ -65,6 +72,22 @@ and `S` (a gate toward a learned rest state `A`) are themselves small conv
 nets of the current state and input, so the relaxation rate itself is
 input-dependent -- see `models/liquidode/model.py` for the full honesty
 note on what is and isn't reproduced from either source paper.
+
+Legendre-KAN-Conv is a different kind of idea from all of the above: every
+other CNN here learns one scalar weight per kernel tap, full stop.
+Kolmogorov-Arnold Networks (Liu et al. 2024) replace that with a learned
+*univariate function* per edge, originally a B-spline; ConvKAN (Bodner
+et al. 2024) puts that inside a convolution. This repo's variant uses a
+degree-K Legendre-polynomial expansion of the (`tanh`-squashed) input as
+that per-tap function -- a smooth global polynomial basis via a
+three-term recurrence, cheaper than a B-spline's piecewise machinery. It
+belongs to the same "structured/basis-function kernel" family as
+Structured Receptive Fields (Gaussian-derivative basis), Gabor CNNs, and
+Spherical CNNs (spherical-harmonic/associated-Legendre-function basis) in
+the wider literature, though none of those are reproduced here -- see
+`models/legendrekan/model.py` for the full honesty note, including that
+the specific Legendre-basis-ConvKAN combination follows a community
+implementation pattern rather than one dedicated paper.
 
 NCA is worth contrasting against everything above it: every other model in
 this repo is a single forward pass (or, for ODE-Net/Liquid-ODE, a single

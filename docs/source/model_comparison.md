@@ -1,7 +1,7 @@
-# How the fourteen models differ
+# How the fifteen models differ
 
-Thirteen of these are genuine CNNs, each isolating one architectural idea;
-the fourteenth (ViT) removes convolution entirely, as a deliberate contrast.
+Fourteen of these are genuine CNNs, each isolating one architectural idea;
+the fifteenth (ViT) removes convolution entirely, as a deliberate contrast.
 
 | Model | Core idea | What breaks if you remove it |
 |---|---|---|
@@ -15,6 +15,7 @@ the fourteenth (ViT) removes convolution entirely, as a deliberate contrast.
 | [SE-Net](models/senet) | a learned per-channel reweighting ("squeeze-and-excite") block | every channel is treated as equally important, regardless of input |
 | [ODE-Net](models/odenet) | ResNet's residual step taken to its continuous limit -- depth as ODE integration, not a layer count | back to a fixed discrete number of residual steps (ResNet itself) |
 | [Liquid-ODE](models/liquidode) | ODE-Net's dynamics, gated like a Liquid Time-Constant network -- learned, input-dependent relaxation rate | back to ODE-Net's plain (non-gated, fixed-rate) dynamics |
+| [Legendre-KAN-Conv](models/legendrekan) | each kernel tap's contribution is a learned Legendre-polynomial function of the input, not a single scalar weight | back to an ordinary conv -- one learned scalar weight per tap, no per-tap function |
 | [U-Net](models/unet) | encoder-decoder with skip connections, one label per *pixel* | without the decoder+skips, you're back to one label per *image* |
 | [NCA](models/nca) | a local update rule, iterated for many stochastic steps, not a single forward pass | no growth at all -- the seed cell just sits there, one frame forever |
 | [YOLO-style detector](models/yolo) | predict several boxes + classes in one forward pass | back to a sliding-window/region-proposal pipeline, far slower |
@@ -44,6 +45,25 @@ not a reproduction of a single published architecture -- see
 ResNet (fixed discrete steps) -> ODE-Net (continuous depth, fixed
 dynamics) -> Liquid-ODE (continuous depth, input-dependent/"liquid"
 dynamics).
+
+## Legendre-KAN-Conv: a structured kernel basis instead of a free weight
+
+Every other model in this repo learns one free scalar weight per kernel
+tap -- the standard convolution formulation since LeNet. {doc}`models/legendrekan`
+replaces that with a Kolmogorov-Arnold-Network-style learned *univariate
+function* per tap: the (`tanh`-squashed) input value at each tap is
+expanded into a degree-K Legendre-polynomial basis, and one ordinary conv
+consumes the expanded, channel-concatenated basis -- that conv's weights
+are the per-tap Legendre coefficients. This belongs to a broader family in
+the literature of replacing free kernel weights with a fixed or
+semi-fixed structured basis -- Structured Receptive Fields use a
+Gaussian-derivative basis, Gabor CNNs modulate kernels by Gabor filters at
+multiple orientations/scales, and Spherical CNNs use a spherical-harmonic
+(associated-Legendre-function) basis for rotation-equivariant 3D/spherical
+data -- though none of those are reproduced here; only the Legendre-basis
+ConvKAN idea is implemented, and even that follows a community
+implementation pattern rather than one single dedicated paper (see
+`models/legendrekan/model.py` for the full honesty note).
 
 ## NCA: not a forward pass at all, but a dynamical system
 
@@ -83,8 +103,9 @@ actually buy you" -- exactly the same framing
 ## The real datasets, and who uses them
 
 - **CIFAR-10**: AlexNet, VGG, GoogLeNet/Inception, ResNet, DenseNet,
-  MobileNet, SE-Net, ODE-Net, Liquid-ODE, and ViT all train on the
-  identical classification task -- ten models, directly comparable.
+  MobileNet, SE-Net, ODE-Net, Liquid-ODE, Legendre-KAN-Conv, and ViT all
+  train on the identical classification task -- eleven models, directly
+  comparable.
 - **MNIST**: LeNet-5, on the dataset it was originally designed for.
 - **Oxford-IIIT Pet** (segmentation masks): U-Net, the one model doing
   dense per-pixel prediction instead of one label per image.

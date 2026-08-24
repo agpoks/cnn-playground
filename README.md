@@ -5,7 +5,7 @@
 # cnn-playground
 
 A playground for **CNN architectures**: implement, run, and benchmark
-thirteen convolutional architectures spanning the field's core ideas --
+fourteen convolutional architectures spanning the field's core ideas --
 plus one deliberate non-convolutional contrast baseline -- side by side on
 real image datasets. Third companion project, after
 [`liquid-nn-playground`](https://github.com/agpoks/liquid-nn-playground)
@@ -24,6 +24,7 @@ layout and philosophy.
 | Channel attention | **SE-Net** | [`models/senet`](models/senet) |
 | Continuous (ODE-integrated) depth | **ODE-Net** | [`models/odenet`](models/odenet) |
 | ODE-Net's dynamics, made "liquid" (learned time-constants) | **Liquid-ODE** | [`models/liquidode`](models/liquidode) |
+| Structured kernel: Legendre-polynomial edge functions (KAN) | **Legendre-KAN-Conv** | [`models/legendrekan`](models/legendrekan) |
 | Encoder-decoder, per-pixel prediction | **U-Net** | [`models/unet`](models/unet) |
 | Local update rule, iterated -- not a classifier at all | **NCA** (Growing Neural Cellular Automata) | [`models/nca`](models/nca) |
 | Classification -> detection | **YOLO-style detector** | [`models/yolo`](models/yolo) |
