@@ -14,6 +14,7 @@ Every model ships with a runnable Python example and a Jupyter notebook.
 
 getting_started
 model_comparison
+benchmark_results
 models/lenet
 models/alexnet
 models/vgg

@@ -138,4 +138,7 @@ actually buy you" -- exactly the same framing
   model whose "training data" is a single synthetic target pattern grown
   from a seed cell -- see `models/nca/model.py` for why.
 
-See {doc}`benchmarks` for how these clusters are grouped for comparison.
+See {doc}`benchmarks` for how these clusters are grouped for comparison, and
+{doc}`benchmark_results` for real, measured params/size/MACs/training-time/
+accuracy/inference-latency numbers for resnet, odenet, liquidode,
+legendrekan, obfconv, and nca, all under one identical CPU training budget.
