@@ -13,6 +13,7 @@ Every model ships with a runnable Python example and a Jupyter notebook.
 :caption: Contents
 
 getting_started
+adding_a_model
 model_comparison
 benchmark_results
 models/lenet
