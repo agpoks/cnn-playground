@@ -1,0 +1,10 @@
+model,params,size_mb,mmacs,train_time_s,test_acc,lat_bs1_ms,lat_bs64_ms
+resnet,272474,1.085,40.81,291.86,0.6111,4.831,44.403
+odenet,209098,0.807,137.76,725.15,0.5777,10.832,119.913
+liquidode,290058,1.118,261.82,1106.92,0.6073,17.013,215.441
+legendrekan,308042,1.190,40.24,201.80,0.5764,2.650,37.579
+obfconv,182922,0.720,8.39,176.94,0.6517,2.556,27.993
+
+# Group B (nca) -- different task, not comparable to test_acc above
+model,params,size_mb,mmacs_one_step,train_time_s,iterations,final_mse,lat_one_step_ms,lat_full_unroll_ms
+nca,8320,0.036,13.1072,232.67,300,0.16260,1.2315,57.416
